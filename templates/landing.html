@@ -80,33 +80,20 @@
 
 <!-- How it works modal -->
 <div class="modal-overlay" id="modal-how-it-works" aria-hidden="true">
-    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal modal--video" role="dialog" aria-modal="true" aria-labelledby="modal-title">
         <button class="modal-close" id="modal-close" aria-label="Close">&times;</button>
-        <h2 class="modal-title" id="modal-title">How Spendly works</h2>
-        <ol class="modal-steps">
-            <li>
-                <span class="modal-step-num">1</span>
-                <div>
-                    <strong>Create a free account</strong>
-                    <p>Sign up in seconds — no credit card, no commitments.</p>
-                </div>
-            </li>
-            <li>
-                <span class="modal-step-num">2</span>
-                <div>
-                    <strong>Log your expenses</strong>
-                    <p>Add any transaction with an amount, category, date, and optional note.</p>
-                </div>
-            </li>
-            <li>
-                <span class="modal-step-num">3</span>
-                <div>
-                    <strong>Spot your patterns</strong>
-                    <p>See monthly summaries and category breakdowns so you always know where your money goes.</p>
-                </div>
-            </li>
-        </ol>
-        <a href="{{ url_for('register') }}" class="btn-primary">Get started free</a>
+        <h2 class="modal-title" id="modal-title">See how Spendly works</h2>
+        <div class="modal-video-wrap">
+            <iframe
+                id="modal-video"
+                src=""
+                data-src="https://www.youtube.com/embed/dQw4w9WgXcQ?enablejsapi=1"
+                title="How Spendly works"
+                frameborder="0"
+                allow="autoplay; encrypted-media"
+                allowfullscreen>
+            </iframe>
+        </div>
     </div>
 </div>
 
@@ -145,14 +132,19 @@
     const overlay = document.getElementById('modal-how-it-works');
     const openBtn = document.getElementById('btn-how-it-works');
     const closeBtn = document.getElementById('modal-close');
+    const video   = document.getElementById('modal-video');
 
     function openModal() {
+        // Load the video only when the modal opens
+        video.src = video.dataset.src;
         overlay.classList.add('is-open');
         overlay.setAttribute('aria-hidden', 'false');
         closeBtn.focus();
     }
 
     function closeModal() {
+        // Clearing src is the most reliable way to stop playback with no library
+        video.src = '';
         overlay.classList.remove('is-open');
         overlay.setAttribute('aria-hidden', 'true');
         openBtn.focus();
