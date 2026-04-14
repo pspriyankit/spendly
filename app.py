@@ -1,7 +1,9 @@
-from flask import Flask, render_template
-from database.db import get_db, init_db, seed_db
+from flask import Flask, render_template, request, redirect, url_for
+from werkzeug.security import generate_password_hash
+from database.db import get_db, init_db, seed_db, create_user, get_user_by_email
 
 app = Flask(__name__)
+app.secret_key = "dev-secret-change-in-prod"
 
 with app.app_context():
     init_db()
@@ -17,8 +19,26 @@ def landing():
     return render_template("landing.html")
 
 
-@app.route("/register")
+@app.route("/register", methods=["GET", "POST"])
 def register():
+    if request.method == "POST":
+        name = request.form.get("name", "").strip()
+        email = request.form.get("email", "").strip()
+        password = request.form.get("password", "")
+
+        if len(password) < 8:
+            return render_template("register.html",
+                                   error="Password must be at least 8 characters.",
+                                   name=name, email=email)
+
+        if get_user_by_email(email):
+            return render_template("register.html",
+                                   error="An account with that email already exists.",
+                                   name=name, email=email)
+
+        create_user(name, email, generate_password_hash(password))
+        return redirect(url_for("login"))
+
     return render_template("register.html")
 
 
